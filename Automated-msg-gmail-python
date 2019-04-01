@@ -1,0 +1,53 @@
+#Import necessary libraries
+import pandas as pd
+import numpy as np
+import smtplib, ssl
+import wx
+
+#Function to send the email
+def send_gmail(sender, receiver, password, msg):
+    port = 587  # For starttls
+    smtp_server = "smtp.gmail.com"
+    context = ssl.create_default_context()
+    with smtplib.SMTP(smtp_server, port) as server:
+        server.ehlo()
+        server.starttls(context=context)
+        server.ehlo()
+        server.login(sender, password)
+        server.sendmail(sender, receiver, msg)
+    return
+    
+
+#Function to get the necessary information
+def onButton(event):
+    print ("Button pressed.")
+
+def input_text(msg):
+    app = wx.App()
+
+    frame = wx.Frame(None, -1, 'win.py')
+    frame.SetSize(0,0,200,50)
+
+    # Create text input
+    dlg1  = wx.TextEntryDialog(frame, msg,'Text Entry')
+    dlg1.SetValue('')
+
+    if dlg1.ShowModal() == wx.ID_OK:
+        text = dlg1.GetValue()
+
+    dlg1.Destroy()
+    return (text)
+   
+#Getting information on the sender
+sender   = input_text('Enter your email address')
+password = input_text('Enter your password')
+subject  = input_text('Enter email subject') #subject of the email
+content  = 'This message is sent from Python.' #body of the email
+message  = """\
+Subject: """+subject+"""
+
+"""+content
+
+#Loop the following for multiple receivers
+receiver = "example@gmail.com"
+send_gmail(sender,receiver,password,message)
